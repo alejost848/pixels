@@ -1,2 +1,2 @@
-# pixels
-Processing app for creating 8-bit characters and illustrations inside a 31x33 canvas.
+# Pixels
+Processing app for creating 8-bit characters and illustrations inside a 31x33 canvas. You can also export your creations in PNG and PDF.
