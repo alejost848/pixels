@@ -1,6 +1,20 @@
+/**
+ * Pixels is a tool for creating 8-bit characters 
+ * and illustrations inside a 31x33 canvas.
+ * You can also export your creations in a PNG and PDF file.
+ *
+ * @author  Alejandro Sanclemente (alejost848)
+ * @version 0.2
+ * June 6th 2015
+ */
+
+import javax.swing.JOptionPane;
 import processing.pdf.*;
 
 PGraphicsPDF pdf;
+PGraphics pg;
+int number = 1 ;
+
 PShape logo;
 boolean record;
 
@@ -10,7 +24,7 @@ Slider r, g, b, brushSize;
 int rValue, gValue, bValue;
 
 int diameter;
-PImage button1, button2, button3, arcades, maker, save, trash;
+PImage button1, button2, button3, username, maker, save, trash;
 
 color actualColor;
 
@@ -21,15 +35,17 @@ void setup() {
   allPixels = new ArrayList<Pixel>();
   allBGs = new ArrayList<BG>();
 
+  pg = createGraphics(620, 660);
+
   diameter = 10;
 
   tool = 1;
 
-  brushSize = new Slider(diameter, 220, color(100), 1);
+  brushSize = new Slider(diameter, 220, color(100, 200), 1);
 
-  r = new Slider(125, 390, color(255, 0, 0), 0);
-  g = new Slider(125, 420, color(0, 255, 0), 0);
-  b = new Slider(125, 450, color(0, 0, 255), 0);
+  r = new Slider(125, 390, color(255, 0, 0, 200), 0);
+  g = new Slider(125, 420, color(0, 255, 0, 200), 0);
+  b = new Slider(125, 450, color(0, 0, 255, 200), 0);
 
   rValue = (int) random(0, 255);
   gValue = (int) random(0, 255);
@@ -44,7 +60,7 @@ void setup() {
   button1 = loadImage("button1.png");
   button2 = loadImage("button2.png");
   button3 = loadImage("button3.png");
-  arcades = loadImage("arcades.png");
+  username = loadImage("username.png");
   maker = loadImage("maker.png");
   save = loadImage("save.png");
   logo = loadShape("logo.svg");
@@ -59,22 +75,34 @@ void setup() {
   for (int i=0; i<8; i++) {
     allBGs.add(new BG(i*30, 560, i));
   }
+
+  shapeMode(CENTER);
 }
 void draw() {
   background(20);
 
   if (record) {
-    pdf = (PGraphicsPDF) createGraphics(620, height, PDF, "Arcades_result.pdf");
+    pdf = (PGraphicsPDF) createGraphics(620, height, PDF, "pixels" + nf(number, 2) + ".pdf");
     beginRecord(pdf);
   }
+
+  pg.beginDraw();
 
   for (int i=0; i<allPixels.size (); i++) {
     allPixels.get(i).draw();
   }
 
   if (record) {
-    pdf.shape(logo, 410, 590);
+    pg.shapeMode(CENTER);
+    pg.shape(logo, 310, 620);
+    pdf.shapeMode(CENTER);
+    pdf.shape(logo, 310, 620);
     endRecord();
+    pg.endDraw();
+
+    pg.save("pixels" + nf(number, 2) + ".png");
+    number++;
+
     record = false;
   }
 
@@ -83,9 +111,9 @@ void draw() {
   }
 
   fill(200);
-  text("Tamaño del pincel", 922, 205);
-  text("Color del pincel", 922, 270);
-  text("Color de fondo", 922, 540);
+  text("Brush size", 922, 205);
+  text("Actual color", 922, 270);
+  text("Background color", 922, 540);
 
   noStroke();
   fill(actualColor);
@@ -95,6 +123,22 @@ void draw() {
   g.draw();
   b.draw();
   brushSize.draw();
+
+  image(maker, 725, 40);
+  image(username, 662, 610);
+  image(save, 888, 607);
+  image(trash, 920, 18);
+
+
+  if (tool==1) {
+    image(button1, 670, 95);
+  }
+  if (tool==2) {
+    image(button2, 670, 95);
+  }
+  if (tool==3) {
+    image(button3, 670, 95);
+  }
 
   if (mouseX<625) {
 
@@ -112,27 +156,62 @@ void draw() {
     if (tool==3) {
       cursor(ARROW);
     }
+  } else  if (mouseX>880 && mouseY>600 && mouseX<915 && mouseY<630) {
+    cursor(HAND);
+  } else if (mouseX>920 && mouseY>18 && mouseX<940 && mouseY<45) {
+    cursor(HAND);
+  } else if (mouseX>660 && mouseX<750 && mouseY>90 && mouseY<140) {
+    cursor(HAND);
+    tint(255, 150);
+    image(button1, 670, 95);
+    tint(255, 255);
+  } else if (mouseX>750 && mouseX<850 && mouseY>90 && mouseY<140) {
+    cursor(HAND);
+    tint(255, 150);
+    image(button2, 670, 95);
+    tint(255, 255);
+  } else if (mouseX>850 && mouseX<900 && mouseY>90 && mouseY<140) {
+    cursor(HAND);
+    tint(255, 150);
+    image(button3, 670, 95);
+    tint(255, 255);
   } else if (mouseX>660 && mouseY>600 && mouseX<770 && mouseY<630) {
     cursor(HAND);
   } else {
-    cursor(ARROW);
-  }
+    if (mouseX>662 && mouseX<916) {
+      if ((mouseY>210 && mouseY<235) || (mouseY>380 && mouseY<400) || (mouseY>410 && mouseY<430) || (mouseY>440 && mouseY<460)) {
 
-  if (tool==1) {
-    image(button1, 670, 95);
-  }
-  if (tool==2) {
-    image(button2, 670, 95);
-  }
-  if (tool==3) {
-    image(button3, 670, 95);
-  }
+        if (mouseY>210 && mouseY<235) {
+          cursor(HAND);
+          brushSize.setFill(color(100, 255));
+        } else if (mouseY>380 && mouseY<400) {
+          cursor(HAND);
+          r.setFill(color(255, 0, 0, 255));
+        } else if (mouseY>410 && mouseY<430) {
+          cursor(HAND);
+          g.setFill(color(0, 255, 0, 255));
+        } else if (mouseY>440 && mouseY<460) {
+          cursor(HAND);
+          b.setFill(color(0, 0, 255, 255));
+        }
+      } else {      
 
-  image(maker, 725, 40);
-  image(arcades, 662, 610);
-  image(save, 888, 607);
+        cursor(ARROW);
+        brushSize.setFill(color(100, 200));
+        r.setFill(color(255, 0, 0, 200));
+        g.setFill(color(0, 255, 0, 200));
+        b.setFill(color(0, 0, 255, 200));
 
-  image(trash, 920, 18);
+        for (int i=0; i<allBGs.size (); i++) {
+          if (dist(mouseX, mouseY, allBGs.get(i).getPosX(), allBGs.get(i).getPosY())<20) {
+            cursor(HAND);
+          }
+        }
+      }
+    } else {
+      cursor(ARROW);
+    }
+  }
 }
 
 void mousePressed() {
@@ -147,7 +226,7 @@ void mousePressed() {
   }
 
   for (int i=0; i<allBGs.size (); i++) {
-    if (dist(mouseX, mouseY, allBGs.get(i).getPosX(), allBGs.get(i).getPosY())<25) {
+    if (dist(mouseX, mouseY, allBGs.get(i).getPosX(), allBGs.get(i).getPosY())<20) {
       color bgTemp = allBGs.get(i).getFill();
       for (int j=0; j<allPixels.size (); j++) {
         if (allPixels.get(j).getModified()==false) {
@@ -173,7 +252,7 @@ void mousePressed() {
   //Save button
   if (mouseX>880 && mouseY>600 && mouseX<915 && mouseY<630) {
     record=true;
-    javax.swing.JOptionPane.showMessageDialog(null, "PDF guardado correctamente. Revisa la carpeta del sketch.");
+    javax.swing.JOptionPane.showMessageDialog(null, "A PNG image and a PDF file have been saved. Check the sketch folder.");
   }
 
   if (mouseX>660 && mouseY>600 && mouseX<770 && mouseY<630) {
@@ -181,16 +260,22 @@ void mousePressed() {
   }
 
   if (mouseX>920 && mouseY>18 && mouseX<940 && mouseY<45) {
-    deleteAll();
+    int response = javax.swing.JOptionPane.showConfirmDialog(null, "Do you want to delete all?", "Delete all", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+    if (response == JOptionPane.YES_OPTION) {
+      deleteAll();
+    }
   }
 }
 
 void mouseDragged() {
-  if (mouseX>661 && mouseX<906) {
+  if (mouseX>725 && mouseX<906) {
     if (mouseY>210 && mouseY<235) {
-      diameter = (int) map(mouseX, 662, 905, 10, 40);      
+      diameter = (int) map(mouseX, 725, 905, 10, 40);      
       brushSize.setPosX((int)diameter);
     }
+  }
+  if (mouseX>661 && mouseX<906) {
     if (mouseY>380 && mouseY<400) {
       rValue = (int) map(mouseX, 662, 905, 0, 255);
       r.setPosX((int)rValue);
@@ -245,9 +330,23 @@ void picker() {
   for (int i=0; i<allPixels.size (); i++) {
     if (dist(mouseX, mouseY, allPixels.get(i).getPosX(), allPixels.get(i).getPosY())<10) {
       actualColor = allPixels.get(i).getFill();
-      r.setPosX((int) red(actualColor));
-      g.setPosX((int) green(actualColor));
-      b.setPosX((int) blue(actualColor));
+      if (actualColor==255) {
+        r.setPosX(255);
+        g.setPosX(255);
+        b.setPosX(255);
+        rValue = 255;
+        gValue = 255;
+        bValue = 255;
+      } else {
+        r.setPosX((int) red(actualColor));
+        g.setPosX((int) green(actualColor));
+        b.setPosX((int) blue(actualColor));
+        rValue = (int) red(actualColor);
+        gValue = (int) green(actualColor);
+        bValue = (int) blue(actualColor);
+      }
+
+      println(actualColor);
     }
   }
 }

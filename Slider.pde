@@ -22,7 +22,6 @@ public class Slider {
       rect(662, posY, posX, 10);
     }
 
-
     fill(200);
     textAlign(RIGHT);
     text(posX, 917, posY+9);
@@ -38,6 +37,10 @@ public class Slider {
 
   public void setPosX(int pX) {
     posX = pX;
+  }
+
+  public void setFill(color cT) {
+    c = cT;
   }
 }
 

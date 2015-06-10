@@ -1,0 +1,3 @@
+To do:
+-Add undo/redo controls.
+-Add HSB color picker.

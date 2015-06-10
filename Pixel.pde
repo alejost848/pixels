@@ -13,6 +13,14 @@ public class Pixel {
   }
 
   public void draw() {
+    //Content to export (invisible to the user)
+    pg.rectMode(CENTER);    
+    pg.stroke(s);
+    pg.fill(c);
+    pg.rect(posX, posY, 20, 20);
+    pg.rectMode(CORNER);
+    
+    //Visible content
     rectMode(CENTER);
     stroke(s);
     fill(c);
