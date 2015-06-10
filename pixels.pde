@@ -256,7 +256,7 @@ void mousePressed() {
   }
 
   if (mouseX>660 && mouseY>600 && mouseX<770 && mouseY<630) {
-    link("www.facebook.com/arrrcades");
+    link("https://github.com/alejost848");
   }
 
   if (mouseX>920 && mouseY>18 && mouseX<940 && mouseY<45) {
