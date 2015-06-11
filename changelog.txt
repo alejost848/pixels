@@ -5,6 +5,6 @@ Changelog:
 -Now you can also export a PNG file.
 -Buttons and sliders now have a feedback when the mouse is over them.
 -Confirmation window added when deleting all the contents of the canvas.
--Brush sized slider now works properly.
+-Brush size slider now works properly.
 -The app title changed from "8-Bit Maker" to "Pixels"
 -Text is now in English
